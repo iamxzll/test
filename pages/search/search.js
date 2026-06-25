@@ -1,6 +1,3 @@
-const db = wx.cloud.database()
-const _ = db.command
-
 const mockGears = [
   { id: 'mat_001', name: '铁锭' },
   { id: 'mat_002', name: '铜锭' },
@@ -196,6 +193,7 @@ Page({
       return
     }
 
+    const db = wx.cloud.database()
     db.collection('materials')
       .where({
         name: db.RegExp({
@@ -224,6 +222,7 @@ Page({
       return
     }
 
+    const db = wx.cloud.database()
     db.collection('gears')
       .where({
         name: db.RegExp({
@@ -259,6 +258,8 @@ Page({
   },
 
   findMaterialsByGearIds: function (gearIds, matchedId, matchedName) {
+    const db = wx.cloud.database()
+    const _ = db.command
     db.collection('materials')
       .where({
         'materials.m_name': _.in(gearIds)
@@ -318,6 +319,8 @@ Page({
       return
     }
 
+    const db = wx.cloud.database()
+    const _ = db.command
     db.collection('gears')
       .where({
         id: _.in(allMatIds)
