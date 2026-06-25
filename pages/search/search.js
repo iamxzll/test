@@ -2,50 +2,78 @@ const db = wx.cloud.database()
 const _ = db.command
 
 const mockGears = [
-  { _id: 'g1', name: '铁锭', description: '基础金属材料' },
-  { _id: 'g2', name: '铜锭', description: '导电性良好的金属材料' },
-  { _id: 'g3', name: '木头', description: '常见的基础材料' },
-  { _id: 'g4', name: '布料', description: '柔软的纺织材料' },
-  { _id: 'g5', name: '皮革', description: '坚韧的动物皮' },
-  { _id: 'g6', name: '宝石', description: '闪亮的珍贵宝石' },
+  { id: 'mat_001', name: '铁锭' },
+  { id: 'mat_002', name: '铜锭' },
+  { id: 'mat_003', name: '木头' },
+  { id: 'mat_004', name: '布料' },
+  { id: 'mat_005', name: '皮革' },
+  { id: 'mat_006', name: '宝石' },
 ]
 
 const mockMaterials = [
   {
     _id: 'm1',
     name: '铁剑',
-    description: '一把锋利的铁制长剑，攻击力中等。',
-    materials: ['铁锭', '木头', '皮革']
+    body: '武器',
+    type: '单手剑',
+    materials: [
+      { m_name: 'mat_001', count: 5 },
+      { m_name: 'mat_003', count: 2 },
+      { m_name: 'mat_005', count: 1 },
+    ]
   },
   {
     _id: 'm2',
     name: '铜盾',
-    description: '铜制盾牌，防御性能不错。',
-    materials: ['铜锭', '木头', '皮革']
+    body: '副手',
+    type: '盾牌',
+    materials: [
+      { m_name: 'mat_002', count: 8 },
+      { m_name: 'mat_003', count: 3 },
+      { m_name: 'mat_005', count: 2 },
+    ]
   },
   {
     _id: 'm3',
     name: '布甲',
-    description: '轻便的布制护甲，适合敏捷职业。',
-    materials: ['布料', '皮革']
+    body: '胸部',
+    type: '布甲',
+    materials: [
+      { m_name: 'mat_004', count: 10 },
+      { m_name: 'mat_005', count: 3 },
+    ]
   },
   {
     _id: 'm4',
     name: '精钢长剑',
-    description: '经过千锤百炼的精钢长剑，攻击力极高。',
-    materials: ['铁锭', '宝石', '皮革']
+    body: '武器',
+    type: '双手剑',
+    materials: [
+      { m_name: 'mat_001', count: 12 },
+      { m_name: 'mat_006', count: 2 },
+      { m_name: 'mat_005', count: 2 },
+    ]
   },
   {
     _id: 'm5',
     name: '法杖',
-    description: '蕴含魔力的法杖，增强法术效果。',
-    materials: ['木头', '宝石', '布料']
+    body: '武器',
+    type: '法杖',
+    materials: [
+      { m_name: 'mat_003', count: 3 },
+      { m_name: 'mat_006', count: 5 },
+      { m_name: 'mat_004', count: 2 },
+    ]
   },
   {
     _id: 'm6',
     name: '皮靴',
-    description: '舒适耐用的皮靴，提升移动速度。',
-    materials: ['皮革', '布料']
+    body: '脚部',
+    type: '皮甲',
+    materials: [
+      { m_name: 'mat_005', count: 6 },
+      { m_name: 'mat_004', count: 2 },
+    ]
   },
 ]
 
@@ -56,7 +84,8 @@ Page({
     resultList: [],
     loading: false,
     searchFocus: false,
-    matchedMaterial: '',
+    matchedMaterialId: '',
+    matchedMaterialName: '',
     useMock: true,
   },
 
@@ -68,8 +97,7 @@ Page({
 
   checkCloudEnv: function () {
     try {
-      const app = getApp()
-      if (app && app.globalData && wx.cloud) {
+      if (wx.cloud) {
         this.setData({ useMock: false })
       }
     } catch (e) {
@@ -84,7 +112,8 @@ Page({
     this.setData({
       searchMode: mode,
       resultList: [],
-      matchedMaterial: '',
+      matchedMaterialId: '',
+      matchedMaterialName: '',
     })
 
     if (this.data.keyword) {
@@ -101,7 +130,11 @@ Page({
     }
 
     if (!value) {
-      this.setData({ resultList: [], matchedMaterial: '' })
+      this.setData({
+        resultList: [],
+        matchedMaterialId: '',
+        matchedMaterialName: '',
+      })
       return
     }
 
@@ -122,14 +155,19 @@ Page({
     this.setData({
       keyword: '',
       resultList: [],
-      matchedMaterial: '',
+      matchedMaterialId: '',
+      matchedMaterialName: '',
       searchFocus: true,
     })
   },
 
   performSearch: function (keyword) {
     if (!keyword || !keyword.trim()) {
-      this.setData({ resultList: [], matchedMaterial: '' })
+      this.setData({
+        resultList: [],
+        matchedMaterialId: '',
+        matchedMaterialName: '',
+      })
       return
     }
 
@@ -157,10 +195,8 @@ Page({
       })
       .get()
       .then(res => {
-        this.setData({
-          resultList: res.data,
-          loading: false,
-        })
+        const list = res.data
+        this.fillMaterialNames(list)
       })
       .catch(err => {
         console.error('搜索装备失败:', err)
@@ -191,14 +227,16 @@ Page({
         if (matchedGears.length === 0) {
           this.setData({
             resultList: [],
-            matchedMaterial: '',
+            matchedMaterialId: '',
+            matchedMaterialName: '',
             loading: false,
           })
           return
         }
 
-        const gearNames = matchedGears.map(g => g.name)
-        this.findMaterialsByGears(gearNames, gearNames[0])
+        const gearIds = matchedGears.map(g => g.id)
+        const firstGear = matchedGears[0]
+        this.findMaterialsByGearIds(gearIds, firstGear.id, firstGear.name)
       })
       .catch(err => {
         console.error('搜索材料失败:', err)
@@ -210,18 +248,19 @@ Page({
       })
   },
 
-  findMaterialsByGears: function (gearNames, matchedName) {
+  findMaterialsByGearIds: function (gearIds, matchedId, matchedName) {
     db.collection('materials')
       .where({
-        materials: _.in(gearNames)
+        'materials.m_name': _.in(gearIds)
       })
       .get()
       .then(res => {
+        const list = res.data
         this.setData({
-          resultList: res.data,
-          matchedMaterial: matchedName,
-          loading: false,
+          matchedMaterialId: matchedId,
+          matchedMaterialName: matchedName,
         })
+        this.fillMaterialNames(list)
       })
       .catch(err => {
         console.error('查询装备失败:', err)
@@ -233,11 +272,90 @@ Page({
       })
   },
 
+  fillMaterialNames: function (materialList) {
+    if (this.data.useMock) {
+      const result = materialList.map(item => ({
+        ...item,
+        materialsWithName: item.materials.map(mat => {
+          const gear = mockGears.find(g => g.id === mat.m_name)
+          return {
+            ...mat,
+            name: gear ? gear.name : mat.m_name,
+          }
+        })
+      }))
+      this.setData({
+        resultList: result,
+        loading: false,
+      })
+      return
+    }
+
+    const allMatIds = []
+    materialList.forEach(item => {
+      item.materials.forEach(mat => {
+        if (!allMatIds.includes(mat.m_name)) {
+          allMatIds.push(mat.m_name)
+        }
+      })
+    })
+
+    if (allMatIds.length === 0) {
+      this.setData({
+        resultList: materialList,
+        loading: false,
+      })
+      return
+    }
+
+    db.collection('gears')
+      .where({
+        id: _.in(allMatIds)
+      })
+      .get()
+      .then(res => {
+        const gearMap = {}
+        res.data.forEach(g => {
+          gearMap[g.id] = g.name
+        })
+
+        const result = materialList.map(item => ({
+          ...item,
+          materialsWithName: item.materials.map(mat => ({
+            ...mat,
+            name: gearMap[mat.m_name] || mat.m_name,
+          }))
+        }))
+
+        this.setData({
+          resultList: result,
+          loading: false,
+        })
+      })
+      .catch(err => {
+        console.error('查询材料名称失败:', err)
+        this.setData({
+          resultList: materialList,
+          loading: false,
+        })
+      })
+  },
+
   mockSearchGear: function (keyword) {
     setTimeout(() => {
-      const result = mockMaterials.filter(item =>
+      const list = mockMaterials.filter(item =>
         item.name.toLowerCase().includes(keyword.toLowerCase())
       )
+      const result = list.map(item => ({
+        ...item,
+        materialsWithName: item.materials.map(mat => {
+          const gear = mockGears.find(g => g.id === mat.m_name)
+          return {
+            ...mat,
+            name: gear ? gear.name : mat.m_name,
+          }
+        })
+      }))
       this.setData({
         resultList: result,
         loading: false,
@@ -254,20 +372,35 @@ Page({
       if (matchedGears.length === 0) {
         this.setData({
           resultList: [],
-          matchedMaterial: '',
+          matchedMaterialId: '',
+          matchedMaterialName: '',
           loading: false,
         })
         return
       }
 
-      const gearNames = matchedGears.map(g => g.name)
-      const result = mockMaterials.filter(item =>
-        item.materials.some(mat => gearNames.includes(mat))
+      const gearIds = matchedGears.map(g => g.id)
+      const firstGear = matchedGears[0]
+
+      const list = mockMaterials.filter(item =>
+        item.materials.some(mat => gearIds.includes(mat.m_name))
       )
+
+      const result = list.map(item => ({
+        ...item,
+        materialsWithName: item.materials.map(mat => {
+          const gear = mockGears.find(g => g.id === mat.m_name)
+          return {
+            ...mat,
+            name: gear ? gear.name : mat.m_name,
+          }
+        })
+      }))
 
       this.setData({
         resultList: result,
-        matchedMaterial: matchedGears[0].name,
+        matchedMaterialId: firstGear.id,
+        matchedMaterialName: firstGear.name,
         loading: false,
       })
     }, 200)

@@ -59,19 +59,31 @@
           <view class="item-name">{{item.name}}</view>
           <view wx:if="{{searchMode === 'material'}}" class="item-tag">包含该材料</view>
         </view>
-        <view wx:if="{{item.description}}" class="item-desc">{{item.description}}</view>
-        <view wx:if="{{item.materials && item.materials.length > 0}}" class="item-materials">
+
+        <view class="item-meta">
+          <view wx:if="{{item.body}}" class="meta-tag body-tag">
+            <text class="meta-label">部位</text>
+            <text class="meta-value">{{item.body}}</text>
+          </view>
+          <view wx:if="{{item.type}}" class="meta-tag type-tag">
+            <text class="meta-label">类型</text>
+            <text class="meta-value">{{item.type}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{item.materialsWithName && item.materialsWithName.length > 0}}" class="item-materials">
           <view class="materials-label">制作材料：</view>
           <view class="materials-list">
-            <text
-              class="material-tag {{item.materials[index] === matchedMaterial ? 'highlight' : ''}}"
-              wx:for="{{item.materials}}"
+            <view
+              class="material-tag {{item.materialsWithName[index].m_name === matchedMaterialId ? 'highlight' : ''}}"
+              wx:for="{{item.materialsWithName}}"
               wx:for-item="mat"
               wx:for-index="index"
-              wx:key="index"
+              wx:key="m_name"
             >
-              {{mat}}
-            </text>
+              <text class="mat-name">{{mat.name}}</text>
+              <text class="mat-count">×{{mat.count}}</text>
+            </view>
           </view>
         </view>
       </view>
