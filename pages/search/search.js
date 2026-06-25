@@ -84,9 +84,8 @@ Page({
     matchedMaterialId: '',
     matchedMaterialName: '',
     useMock: true,
+    searched: false,
   },
-
-  searchTimer: null,
 
   onLoad: function () {
     this.checkCloudEnv()
@@ -121,41 +120,46 @@ Page({
       resultList: [],
       matchedMaterialId: '',
       matchedMaterialName: '',
+      searched: false,
     })
-
-    if (this.data.keyword) {
-      this.performSearch(this.data.keyword)
-    }
   },
 
   onSearchInput: function (e) {
     const value = e.detail.value
     this.setData({ keyword: value })
 
-    if (this.searchTimer) {
-      clearTimeout(this.searchTimer)
-    }
-
     if (!value) {
       this.setData({
         resultList: [],
         matchedMaterialId: '',
         matchedMaterialName: '',
+        searched: false,
+      })
+    }
+  },
+
+  onSearchClick: function () {
+    const keyword = this.data.keyword
+    if (!keyword || !keyword.trim()) {
+      wx.showToast({
+        title: '请输入搜索关键词',
+        icon: 'none',
       })
       return
     }
-
-    this.searchTimer = setTimeout(() => {
-      this.performSearch(value)
-    }, 300)
+    this.performSearch(keyword.trim())
   },
 
   onSearchConfirm: function (e) {
     const value = e.detail.value
-    if (this.searchTimer) {
-      clearTimeout(this.searchTimer)
+    if (!value || !value.trim()) {
+      wx.showToast({
+        title: '请输入搜索关键词',
+        icon: 'none',
+      })
+      return
     }
-    this.performSearch(value)
+    this.performSearch(value.trim())
   },
 
   onClearSearch: function () {
@@ -165,6 +169,7 @@ Page({
       matchedMaterialId: '',
       matchedMaterialName: '',
       searchFocus: true,
+      searched: false,
     })
   },
 
@@ -174,11 +179,12 @@ Page({
         resultList: [],
         matchedMaterialId: '',
         matchedMaterialName: '',
+        searched: false,
       })
       return
     }
 
-    this.setData({ loading: true })
+    this.setData({ loading: true, searched: true })
 
     if (this.data.searchMode === 'gear') {
       this.searchGearByName(keyword)

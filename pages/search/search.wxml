@@ -14,6 +14,11 @@
         />
         <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</view>
       </view>
+      <view class="search-btn" bindtap="onSearchClick">搜索</view>
+    </view>
+
+    <view class="mode-switch-row">
+      <view class="mode-label">搜索方式：</view>
       <view class="mode-switch">
         <view class="switch-bg {{searchMode === 'material' ? 'right' : ''}}"></view>
         <view
@@ -21,14 +26,14 @@
           bindtap="switchSearchMode"
           data-mode="gear"
         >
-          装备
+          按装备搜索
         </view>
         <view
           class="switch-item {{searchMode === 'material' ? 'active' : ''}}"
           bindtap="switchSearchMode"
           data-mode="material"
         >
-          材料
+          按材料搜索
         </view>
       </view>
     </view>
@@ -39,17 +44,18 @@
       <view class="loading-text">加载中...</view>
     </view>
 
-    <view wx:elif="{{!keyword}}" class="empty-tip">
-      <view class="empty-icon">📦</view>
-      <view class="empty-text">请输入关键词开始搜索</view>
+    <view wx:elif="{{!searched}}" class="empty-tip">
+      <view class="empty-icon">🔍</view>
+      <view class="empty-text">输入关键词后点击搜索</view>
     </view>
 
     <view wx:elif="{{resultList.length === 0}}" class="empty-tip">
-      <view class="empty-icon">🔍</view>
+      <view class="empty-icon">📭</view>
       <view class="empty-text">未找到相关{{searchMode === 'gear' ? '装备' : '材料'}}</view>
     </view>
 
     <view wx:else class="result-list">
+      <view class="result-count">共找到 {{resultList.length}} 条结果</view>
       <view
         class="result-item"
         wx:for="{{resultList}}"
