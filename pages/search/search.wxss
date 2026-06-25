@@ -327,11 +327,14 @@
 
 .mat-name {
   color: #333;
+  flex-shrink: 0;
 }
 
 .mat-count {
   color: #999;
   font-weight: 500;
+  flex-shrink: 0;
+  margin-left: 4rpx;
 }
 
 .material-tag.highlight {

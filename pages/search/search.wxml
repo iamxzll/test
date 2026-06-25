@@ -88,8 +88,8 @@
               wx:for-item="mat"
               wx:key="m_name"
             >
-              <text class="mat-name">{{mat.name}}</text>
-              <text class="mat-count">×{{mat.count}}</text>
+              <view class="mat-name">{{mat.name}}</view>
+              <view class="mat-count">×{{mat.count}}</view>
             </view>
           </view>
         </view>
