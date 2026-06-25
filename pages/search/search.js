@@ -1,3 +1,16 @@
+let db = null
+let _ = null
+
+try {
+  if (wx.cloud) {
+    db = wx.cloud.database()
+    _ = db.command
+  }
+} catch (e) {
+  db = null
+  _ = null
+}
+
 const mockGears = [
   { id: 'mat_001', name: '铁锭' },
   { id: 'mat_002', name: '铜锭' },
@@ -93,12 +106,11 @@ Page({
 
   checkCloudEnv: function () {
     try {
-      if (!wx.cloud) {
+      if (!db) {
         this.setData({ useMock: true })
         return
       }
 
-      const db = wx.cloud.database()
       db.collection('gears').limit(1).get()
         .then(() => {
           this.setData({ useMock: false })
@@ -199,7 +211,6 @@ Page({
       return
     }
 
-    const db = wx.cloud.database()
     db.collection('materials')
       .where({
         name: db.RegExp({
@@ -228,7 +239,6 @@ Page({
       return
     }
 
-    const db = wx.cloud.database()
     db.collection('gears')
       .where({
         name: db.RegExp({
@@ -264,8 +274,6 @@ Page({
   },
 
   findMaterialsByGearIds: function (gearIds, matchedId, matchedName) {
-    const db = wx.cloud.database()
-    const _ = db.command
     db.collection('materials')
       .where({
         'materials.m_name': _.in(gearIds)
@@ -325,8 +333,6 @@ Page({
       return
     }
 
-    const db = wx.cloud.database()
-    const _ = db.command
     db.collection('gears')
       .where({
         id: _.in(allMatIds)
