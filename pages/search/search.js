@@ -129,11 +129,11 @@ Page({
 
     this.setData({
       searchMode: mode,
-      resultList: [],
-      matchedMaterialId: '',
-      matchedMaterialName: '',
-      searched: false,
     })
+
+    if (this.data.keyword && this.data.keyword.trim()) {
+      this.performSearch(this.data.keyword.trim())
+    }
   },
 
   onSearchInput: function (e) {
