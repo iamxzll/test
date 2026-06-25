@@ -83,10 +83,9 @@
           <view class="materials-label">制作材料：</view>
           <view class="materials-list">
             <view
-              class="material-tag {{item.materialsWithName[index].m_name === matchedMaterialId ? 'highlight' : ''}}"
+              class="material-tag {{mat.m_name === matchedMaterialId ? 'highlight' : ''}}"
               wx:for="{{item.materialsWithName}}"
               wx:for-item="mat"
-              wx:for-index="index"
               wx:key="m_name"
             >
               <text class="mat-name">{{mat.name}}</text>
