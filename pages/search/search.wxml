@@ -1,34 +1,41 @@
 <view class="container">
-  <view class="search-section">
-    <view class="search-bar">
-      <view class="search-icon">🔍</view>
-      <input
-        class="search-input"
-        placeholder="{{searchMode === 'gear' ? '请输入装备名称' : '请输入材料名称'}}"
-        value="{{keyword}}"
-        bindinput="onSearchInput"
-        bindconfirm="onSearchConfirm"
-        focus="{{searchFocus}}"
-        confirm-type="search"
-      />
-      <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</view>
+  <view class="search-header">
+    <view class="search-row">
+      <view class="search-bar">
+        <view class="search-icon">🔍</view>
+        <input
+          class="search-input"
+          placeholder="{{searchMode === 'gear' ? '请输入装备名称' : '请输入材料名称'}}"
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+          bindconfirm="onSearchConfirm"
+          focus="{{searchFocus}}"
+          confirm-type="search"
+        />
+        <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</view>
+      </view>
+      <view class="search-btn" bindtap="onSearchClick">搜索</view>
     </view>
-  </view>
 
-  <view class="tab-bar">
-    <view
-      class="tab-item {{searchMode === 'gear' ? 'active' : ''}}"
-      bindtap="switchSearchMode"
-      data-mode="gear"
-    >
-      按装备搜索
-    </view>
-    <view
-      class="tab-item {{searchMode === 'material' ? 'active' : ''}}"
-      bindtap="switchSearchMode"
-      data-mode="material"
-    >
-      按材料搜索
+    <view class="mode-switch-row">
+      <view class="mode-label">搜索方式：</view>
+      <view class="mode-switch">
+        <view class="switch-bg {{searchMode === 'material' ? 'right' : ''}}"></view>
+        <view
+          class="switch-item {{searchMode === 'gear' ? 'active' : ''}}"
+          bindtap="switchSearchMode"
+          data-mode="gear"
+        >
+          按装备搜索
+        </view>
+        <view
+          class="switch-item {{searchMode === 'material' ? 'active' : ''}}"
+          bindtap="switchSearchMode"
+          data-mode="material"
+        >
+          按材料搜索
+        </view>
+      </view>
     </view>
   </view>
 
@@ -37,17 +44,18 @@
       <view class="loading-text">加载中...</view>
     </view>
 
-    <view wx:elif="{{!keyword}}" class="empty-tip">
-      <view class="empty-icon">📦</view>
-      <view class="empty-text">请输入关键词开始搜索</view>
+    <view wx:elif="{{!searched}}" class="empty-tip">
+      <view class="empty-icon">🔍</view>
+      <view class="empty-text">输入关键词后点击搜索</view>
     </view>
 
     <view wx:elif="{{resultList.length === 0}}" class="empty-tip">
-      <view class="empty-icon">🔍</view>
+      <view class="empty-icon">📭</view>
       <view class="empty-text">未找到相关{{searchMode === 'gear' ? '装备' : '材料'}}</view>
     </view>
 
     <view wx:else class="result-list">
+      <view class="result-count">共找到 {{resultList.length}} 条结果</view>
       <view
         class="result-item"
         wx:for="{{resultList}}"
@@ -59,19 +67,31 @@
           <view class="item-name">{{item.name}}</view>
           <view wx:if="{{searchMode === 'material'}}" class="item-tag">包含该材料</view>
         </view>
-        <view wx:if="{{item.description}}" class="item-desc">{{item.description}}</view>
-        <view wx:if="{{item.materials && item.materials.length > 0}}" class="item-materials">
+
+        <view class="item-meta">
+          <view wx:if="{{item.body}}" class="meta-tag body-tag">
+            <text class="meta-label">部位</text>
+            <text class="meta-value">{{item.body}}</text>
+          </view>
+          <view wx:if="{{item.type}}" class="meta-tag type-tag">
+            <text class="meta-label">类型</text>
+            <text class="meta-value">{{item.type}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{item.materialsWithName && item.materialsWithName.length > 0}}" class="item-materials">
           <view class="materials-label">制作材料：</view>
           <view class="materials-list">
-            <text
-              class="material-tag {{item.materials[index] === matchedMaterial ? 'highlight' : ''}}"
-              wx:for="{{item.materials}}"
+            <view
+              class="material-tag {{item.materialsWithName[index].m_name === matchedMaterialId ? 'highlight' : ''}}"
+              wx:for="{{item.materialsWithName}}"
               wx:for-item="mat"
               wx:for-index="index"
-              wx:key="index"
+              wx:key="m_name"
             >
-              {{mat}}
-            </text>
+              <text class="mat-name">{{mat.name}}</text>
+              <text class="mat-count">×{{mat.count}}</text>
+            </view>
           </view>
         </view>
       </view>
