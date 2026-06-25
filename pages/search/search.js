@@ -97,9 +97,19 @@ Page({
 
   checkCloudEnv: function () {
     try {
-      if (wx.cloud) {
-        this.setData({ useMock: false })
+      if (!wx.cloud) {
+        this.setData({ useMock: true })
+        return
       }
+
+      const db = wx.cloud.database()
+      db.collection('gears').limit(1).get()
+        .then(() => {
+          this.setData({ useMock: false })
+        })
+        .catch(() => {
+          this.setData({ useMock: true })
+        })
     } catch (e) {
       this.setData({ useMock: true })
     }
