@@ -130,10 +130,6 @@ Page({
     this.setData({
       searchMode: mode,
     })
-
-    if (this.data.keyword && this.data.keyword.trim()) {
-      this.performSearch(this.data.keyword.trim())
-    }
   },
 
   onSearchInput: function (e) {
