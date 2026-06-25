@@ -1,34 +1,36 @@
 <view class="container">
-  <view class="search-section">
-    <view class="search-bar">
-      <view class="search-icon">🔍</view>
-      <input
-        class="search-input"
-        placeholder="{{searchMode === 'gear' ? '请输入装备名称' : '请输入材料名称'}}"
-        value="{{keyword}}"
-        bindinput="onSearchInput"
-        bindconfirm="onSearchConfirm"
-        focus="{{searchFocus}}"
-        confirm-type="search"
-      />
-      <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</view>
-    </view>
-  </view>
-
-  <view class="tab-bar">
-    <view
-      class="tab-item {{searchMode === 'gear' ? 'active' : ''}}"
-      bindtap="switchSearchMode"
-      data-mode="gear"
-    >
-      按装备搜索
-    </view>
-    <view
-      class="tab-item {{searchMode === 'material' ? 'active' : ''}}"
-      bindtap="switchSearchMode"
-      data-mode="material"
-    >
-      按材料搜索
+  <view class="search-header">
+    <view class="search-row">
+      <view class="search-bar">
+        <view class="search-icon">🔍</view>
+        <input
+          class="search-input"
+          placeholder="{{searchMode === 'gear' ? '请输入装备名称' : '请输入材料名称'}}"
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+          bindconfirm="onSearchConfirm"
+          focus="{{searchFocus}}"
+          confirm-type="search"
+        />
+        <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</view>
+      </view>
+      <view class="mode-switch">
+        <view class="switch-bg {{searchMode === 'material' ? 'right' : ''}}"></view>
+        <view
+          class="switch-item {{searchMode === 'gear' ? 'active' : ''}}"
+          bindtap="switchSearchMode"
+          data-mode="gear"
+        >
+          装备
+        </view>
+        <view
+          class="switch-item {{searchMode === 'material' ? 'active' : ''}}"
+          bindtap="switchSearchMode"
+          data-mode="material"
+        >
+          材料
+        </view>
+      </view>
     </view>
   </view>
 
