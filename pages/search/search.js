@@ -1,92 +1,5 @@
-let db = null
-let _ = null
-
-try {
-  if (wx.cloud) {
-    db = wx.cloud.database()
-    _ = db.command
-  }
-} catch (e) {
-  db = null
-  _ = null
-}
-
-const mockGears = [
-  { id: 'mat_001', name: '铁锭' },
-  { id: 'mat_002', name: '铜锭' },
-  { id: 'mat_003', name: '木头' },
-  { id: 'mat_004', name: '布料' },
-  { id: 'mat_005', name: '皮革' },
-  { id: 'mat_006', name: '宝石' },
-]
-
-const mockMaterials = [
-  {
-    _id: 'm1',
-    name: '铁剑',
-    body: '武器',
-    type: '单手剑',
-    materials: [
-      { m_name: 'mat_001', count: 5 },
-      { m_name: 'mat_003', count: 2 },
-      { m_name: 'mat_005', count: 1 },
-    ]
-  },
-  {
-    _id: 'm2',
-    name: '铜盾',
-    body: '副手',
-    type: '盾牌',
-    materials: [
-      { m_name: 'mat_002', count: 8 },
-      { m_name: 'mat_003', count: 3 },
-      { m_name: 'mat_005', count: 2 },
-    ]
-  },
-  {
-    _id: 'm3',
-    name: '布甲',
-    body: '胸部',
-    type: '布甲',
-    materials: [
-      { m_name: 'mat_004', count: 10 },
-      { m_name: 'mat_005', count: 3 },
-    ]
-  },
-  {
-    _id: 'm4',
-    name: '精钢长剑',
-    body: '武器',
-    type: '双手剑',
-    materials: [
-      { m_name: 'mat_001', count: 12 },
-      { m_name: 'mat_006', count: 2 },
-      { m_name: 'mat_005', count: 2 },
-    ]
-  },
-  {
-    _id: 'm5',
-    name: '法杖',
-    body: '武器',
-    type: '法杖',
-    materials: [
-      { m_name: 'mat_003', count: 3 },
-      { m_name: 'mat_006', count: 5 },
-      { m_name: 'mat_004', count: 2 },
-    ]
-  },
-  {
-    _id: 'm6',
-    name: '皮靴',
-    body: '脚部',
-    type: '皮甲',
-    materials: [
-      { m_name: 'mat_005', count: 6 },
-      { m_name: 'mat_004', count: 2 },
-    ]
-  },
-]
-
+const db = wx.cloud.database()
+const _ = db.command
 Page({
   data: {
     searchMode: 'gear',
@@ -99,18 +12,18 @@ Page({
     useMock: true,
     searched: false,
   },
-
+ 
   onLoad: function () {
     this.checkCloudEnv()
   },
-
+ 
   checkCloudEnv: function () {
     try {
       if (!db) {
         this.setData({ useMock: true })
         return
       }
-
+ 
       db.collection('gears').limit(1).get()
         .then(() => {
           this.setData({ useMock: false })
@@ -122,24 +35,20 @@ Page({
       this.setData({ useMock: true })
     }
   },
-
+ 
   switchSearchMode: function (e) {
     const mode = e.currentTarget.dataset.mode
     if (mode === this.data.searchMode) return
-
+ 
     this.setData({
       searchMode: mode,
-      resultList: [],
-      matchedMaterialId: '',
-      matchedMaterialName: '',
-      searched: false,
     })
   },
-
+ 
   onSearchInput: function (e) {
     const value = e.detail.value
     this.setData({ keyword: value })
-
+ 
     if (!value) {
       this.setData({
         resultList: [],
@@ -149,7 +58,7 @@ Page({
       })
     }
   },
-
+ 
   onSearchClick: function () {
     const keyword = this.data.keyword
     if (!keyword || !keyword.trim()) {
@@ -161,7 +70,7 @@ Page({
     }
     this.performSearch(keyword.trim())
   },
-
+ 
   onSearchConfirm: function (e) {
     const value = e.detail.value
     if (!value || !value.trim()) {
@@ -173,7 +82,7 @@ Page({
     }
     this.performSearch(value.trim())
   },
-
+ 
   onClearSearch: function () {
     this.setData({
       keyword: '',
@@ -184,7 +93,7 @@ Page({
       searched: false,
     })
   },
-
+ 
   performSearch: function (keyword) {
     if (!keyword || !keyword.trim()) {
       this.setData({
@@ -195,22 +104,22 @@ Page({
       })
       return
     }
-
+ 
     this.setData({ loading: true, searched: true })
-
+ 
     if (this.data.searchMode === 'gear') {
       this.searchGearByName(keyword)
     } else {
       this.searchMaterialByName(keyword)
     }
   },
-
+ 
   searchGearByName: function (keyword) {
     if (this.data.useMock) {
       this.mockSearchGear(keyword)
       return
     }
-
+ 
     db.collection('materials')
       .where({
         name: db.RegExp({
@@ -232,13 +141,13 @@ Page({
         })
       })
   },
-
+ 
   searchMaterialByName: function (keyword) {
     if (this.data.useMock) {
       this.mockSearchMaterial(keyword)
       return
     }
-
+ 
     db.collection('gears')
       .where({
         name: db.RegExp({
@@ -258,7 +167,7 @@ Page({
           })
           return
         }
-
+ 
         const gearIds = matchedGears.map(g => g.id)
         const firstGear = matchedGears[0]
         this.findMaterialsByGearIds(gearIds, firstGear.id, firstGear.name)
@@ -272,7 +181,7 @@ Page({
         })
       })
   },
-
+ 
   findMaterialsByGearIds: function (gearIds, matchedId, matchedName) {
     db.collection('materials')
       .where({
@@ -296,7 +205,7 @@ Page({
         })
       })
   },
-
+ 
   fillMaterialNames: function (materialList) {
     if (this.data.useMock) {
       const result = materialList.map(item => ({
@@ -315,7 +224,7 @@ Page({
       })
       return
     }
-
+ 
     const allMatIds = []
     materialList.forEach(item => {
       item.materials.forEach(mat => {
@@ -324,7 +233,7 @@ Page({
         }
       })
     })
-
+ 
     if (allMatIds.length === 0) {
       this.setData({
         resultList: materialList,
@@ -332,7 +241,7 @@ Page({
       })
       return
     }
-
+ 
     db.collection('gears')
       .where({
         id: _.in(allMatIds)
@@ -343,7 +252,7 @@ Page({
         res.data.forEach(g => {
           gearMap[g.id] = g.name
         })
-
+ 
         const result = materialList.map(item => ({
           ...item,
           materialsWithName: item.materials.map(mat => ({
@@ -351,7 +260,7 @@ Page({
             name: gearMap[mat.m_name] || mat.m_name,
           }))
         }))
-
+ 
         this.setData({
           resultList: result,
           loading: false,
@@ -365,7 +274,7 @@ Page({
         })
       })
   },
-
+ 
   mockSearchGear: function (keyword) {
     setTimeout(() => {
       const list = mockMaterials.filter(item =>
@@ -387,13 +296,13 @@ Page({
       })
     }, 200)
   },
-
+ 
   mockSearchMaterial: function (keyword) {
     setTimeout(() => {
       const matchedGears = mockGears.filter(g =>
         g.name.toLowerCase().includes(keyword.toLowerCase())
       )
-
+ 
       if (matchedGears.length === 0) {
         this.setData({
           resultList: [],
@@ -403,14 +312,14 @@ Page({
         })
         return
       }
-
+ 
       const gearIds = matchedGears.map(g => g.id)
       const firstGear = matchedGears[0]
-
+ 
       const list = mockMaterials.filter(item =>
         item.materials.some(mat => gearIds.includes(mat.m_name))
       )
-
+ 
       const result = list.map(item => ({
         ...item,
         materialsWithName: item.materials.map(mat => {
@@ -421,7 +330,7 @@ Page({
           }
         })
       }))
-
+ 
       this.setData({
         resultList: result,
         matchedMaterialId: firstGear.id,
@@ -430,7 +339,7 @@ Page({
       })
     }, 200)
   },
-
+ 
   onItemTap: function (e) {
     const item = e.currentTarget.dataset.item
     console.log('点击了:', item)
