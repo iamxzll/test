@@ -16,7 +16,7 @@
       </view>
       <view class="search-btn" bindtap="onSearchClick">搜索</view>
     </view>
-
+ 
     <view class="mode-switch-row">
       <view class="mode-label">搜索方式：</view>
       <view class="mode-switch">
@@ -38,22 +38,22 @@
       </view>
     </view>
   </view>
-
+ 
   <view class="result-section">
     <view wx:if="{{loading}}" class="loading">
       <view class="loading-text">加载中...</view>
     </view>
-
+ 
     <view wx:elif="{{!searched}}" class="empty-tip">
       <view class="empty-icon">🔍</view>
       <view class="empty-text">输入关键词后点击搜索</view>
     </view>
-
+ 
     <view wx:elif="{{resultList.length === 0}}" class="empty-tip">
       <view class="empty-icon">📭</view>
       <view class="empty-text">未找到相关{{searchMode === 'gear' ? '装备' : '材料'}}</view>
     </view>
-
+ 
     <view wx:else class="result-list">
       <view class="result-count">共找到 {{resultList.length}} 条结果</view>
       <view
@@ -67,26 +67,23 @@
           <view class="item-name">{{item.name}}</view>
           <view wx:if="{{searchMode === 'material'}}" class="item-tag">包含该材料</view>
         </view>
-
+ 
         <view class="item-meta">
           <view wx:if="{{item.body}}" class="meta-tag body-tag">
-            <text class="meta-label">部位</text>
             <text class="meta-value">{{item.body}}</text>
           </view>
           <view wx:if="{{item.type}}" class="meta-tag type-tag">
-            <text class="meta-label">类型</text>
             <text class="meta-value">{{item.type}}</text>
           </view>
         </view>
-
+ 
         <view wx:if="{{item.materialsWithName && item.materialsWithName.length > 0}}" class="item-materials">
           <view class="materials-label">制作材料：</view>
           <view class="materials-list">
             <view
-              class="material-tag {{item.materialsWithName[index].m_name === matchedMaterialId ? 'highlight' : ''}}"
+              class="material-tag {{mat.m_name === matchedMaterialId ? 'highlight' : ''}}"
               wx:for="{{item.materialsWithName}}"
               wx:for-item="mat"
-              wx:for-index="index"
               wx:key="m_name"
             >
               <text class="mat-name">{{mat.name}}</text>
