@@ -2,7 +2,7 @@
   min-height: 100vh;
   background-color: #f5f5f5;
 }
-
+ 
 .search-header {
   background-color: #fff;
   padding: 20rpx 30rpx 24rpx;
@@ -11,14 +11,14 @@
   z-index: 100;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
-
+ 
 .search-row {
   display: flex;
   align-items: center;
   gap: 16rpx;
   margin-bottom: 20rpx;
 }
-
+ 
 .search-bar {
   flex: 1;
   display: flex;
@@ -27,13 +27,13 @@
   border-radius: 40rpx;
   padding: 16rpx 24rpx;
 }
-
+ 
 .search-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
   color: #999;
 }
-
+ 
 .search-input {
   flex: 1;
   font-size: 28rpx;
@@ -41,7 +41,7 @@
   height: 48rpx;
   line-height: 48rpx;
 }
-
+ 
 .clear-btn {
   width: 40rpx;
   height: 40rpx;
@@ -54,7 +54,7 @@
   font-size: 24rpx;
   margin-left: 16rpx;
 }
-
+ 
 .search-btn {
   flex-shrink: 0;
   height: 72rpx;
@@ -69,24 +69,20 @@
   justify-content: center;
   box-shadow: 0 4rpx 12rpx rgba(22, 119, 255, 0.3);
 }
-
+ 
 .search-btn:active {
   opacity: 0.85;
   transform: scale(0.98);
 }
-
+ 
 .mode-switch-row {
   display: flex;
   align-items: center;
   gap: 16rpx;
 }
+ 
 
-.mode-label {
-  font-size: 26rpx;
-  color: #666;
-  flex-shrink: 0;
-}
-
+ 
 .mode-switch {
   position: relative;
   display: flex;
@@ -96,7 +92,7 @@
   padding: 6rpx;
   flex: 1;
 }
-
+ 
 .switch-bg {
   position: absolute;
   left: 6rpx;
@@ -108,11 +104,11 @@
   z-index: 1;
   box-shadow: 0 2rpx 8rpx rgba(22, 119, 255, 0.25);
 }
-
+ 
 .switch-bg.right {
   transform: translateX(100%);
 }
-
+ 
 .switch-item {
   position: relative;
   z-index: 2;
@@ -126,19 +122,19 @@
   font-weight: 400;
   transition: color 0.3s ease, font-weight 0.3s ease;
 }
-
+ 
 .switch-item.active {
   color: #fff;
   font-weight: 500;
 }
-
+ 
 .tab-bar {
   display: flex;
   background-color: #fff;
   padding: 0 30rpx;
   border-bottom: 1rpx solid #eee;
 }
-
+ 
 .tab-item {
   flex: 1;
   text-align: center;
@@ -147,12 +143,12 @@
   color: #666;
   position: relative;
 }
-
+ 
 .tab-item.active {
   color: #1677ff;
   font-weight: 500;
 }
-
+ 
 .tab-item.active::after {
   content: '';
   position: absolute;
@@ -164,29 +160,29 @@
   background-color: #1677ff;
   border-radius: 2rpx;
 }
-
+ 
 .result-section {
   padding: 20rpx;
 }
-
+ 
 .result-count {
   font-size: 26rpx;
   color: #999;
   padding: 10rpx 10rpx 20rpx;
 }
-
+ 
 .loading {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 100rpx 0;
 }
-
+ 
 .loading-text {
   font-size: 28rpx;
   color: #999;
 }
-
+ 
 .empty-tip {
   display: flex;
   flex-direction: column;
@@ -194,44 +190,44 @@
   justify-content: center;
   padding: 120rpx 0;
 }
-
+ 
 .empty-icon {
   font-size: 80rpx;
   margin-bottom: 20rpx;
 }
-
+ 
 .empty-text {
   font-size: 28rpx;
   color: #999;
 }
-
+ 
 .result-list {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
 }
-
+ 
 .result-item {
   background-color: #fff;
   border-radius: 16rpx;
   padding: 24rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
-
+ 
 .item-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12rpx;
 }
-
+ 
 .item-name {
   font-size: 32rpx;
   font-weight: 500;
   color: #333;
   flex: 1;
 }
-
+ 
 .item-tag {
   font-size: 22rpx;
   color: #1677ff;
@@ -241,14 +237,14 @@
   margin-left: 16rpx;
   flex-shrink: 0;
 }
-
+ 
 .item-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 16rpx;
   margin-bottom: 20rpx;
 }
-
+ 
 .meta-tag {
   display: flex;
   align-items: center;
@@ -257,62 +253,62 @@
   border-radius: 8rpx;
   font-size: 24rpx;
 }
-
+ 
 .body-tag {
   background-color: #e6f4ff;
 }
-
+ 
 .body-tag .meta-label {
   color: #1677ff;
 }
-
+ 
 .body-tag .meta-value {
   color: #0958d9;
   font-weight: 500;
 }
-
+ 
 .type-tag {
   background-color: #f6ffed;
 }
-
+ 
 .type-tag .meta-label {
   color: #52c41a;
 }
-
+ 
 .type-tag .meta-value {
   color: #389e0d;
   font-weight: 500;
 }
-
+ 
 .meta-label {
   opacity: 0.7;
 }
-
+ 
 .meta-value {
   font-weight: 500;
 }
-
+ 
 .item-materials {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 12rpx;
 }
-
+ 
 .materials-label {
   font-size: 26rpx;
   color: #999;
   flex-shrink: 0;
   margin-right: 8rpx;
 }
-
+ 
 .materials-list {
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
   flex: 1;
 }
-
+ 
 .material-tag {
   display: flex;
   align-items: center;
@@ -324,24 +320,24 @@
   border-radius: 20rpx;
   line-height: 1.4;
 }
-
+ 
 .mat-name {
   color: #333;
 }
-
+ 
 .mat-count {
   color: #999;
   font-weight: 500;
 }
-
+ 
 .material-tag.highlight {
   background-color: #fff3e6;
 }
-
+ 
 .material-tag.highlight .mat-name {
   color: #ff6b00;
 }
-
+ 
 .material-tag.highlight .mat-count {
   color: #ff8c3a;
 }
